@@ -1,4 +1,6 @@
+import { api } from "@/convex/_generated/api";
 import { WebhookEvent } from "@clerk/nextjs/server";
+import { fetchMutation } from "convex/nextjs";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { Webhook } from "svix";
@@ -59,6 +61,16 @@ export async function POST(req: Request) {
       try {
 
         console.log('payload', payload)
+
+        const userData = {
+          userId: payload?.data?.id,
+          email: payload?.data?.email_addresses?.[0]?.email_address,
+          name: `${payload?.data?.first_name ? payload?.data?.first_name: ""}`,
+          createdAt: Date.now(),
+          profileImage: payload?.data?.profile_image_url,
+        }
+
+        await fetchMutation(api.users.createUser, userData);
         return NextResponse.json({
           status: 200,
           message: "User info inserted",
