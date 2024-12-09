@@ -1,8 +1,11 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+# WuzzUp
+
+Welcome to **WuzzUp**, a Next.js application designed to bring the *African parents* way of WhatsApp to life. This project is bootstrapped with [Next.js](https://nextjs.org) using the [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app) setup.
 
 ## Getting Started
 
-First, run the development server:
+To get started with the development of WuzzUp, follow these steps to run the development server:
 
 ```bash
 npm run dev
@@ -14,23 +17,41 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Once the server is running, open [http://localhost:3000](http://localhost:3000) in your browser to view the app in action.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Editing Pages
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+To make changes to the app, start by modifying `app/page.tsx`. The page will automatically update as you edit the file, giving you real-time feedback.
+
+## Features
+
+- **Optimized Fonts**: This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to optimize and load [Geist](https://vercel.com/font), a sleek font family by Vercel.
 
 ## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+To dive deeper into Next.js, check out these resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- [Next.js Documentation](https://nextjs.org/docs) – Explore the official documentation to learn about Next.js features and APIs.
+- [Learn Next.js](https://nextjs.org/learn) – Take an interactive tutorial to understand Next.js concepts.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Feel free to explore the [Next.js GitHub repository](https://github.com/vercel/next.js) and contribute or leave feedback!
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The easiest way to deploy WuzzUp is using the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme), created by the makers of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+For deployment instructions, check out the [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying).
+
+## Video Walkthrough
+
+For a step-by-step guide on how to use WuzzUp, check out the video walkthrough below:
+
+[Watch the video](https://www.youtube.com/watch?v=your-video-id)
+
+
+
+## Video Walkthrough
+
+For a step-by-step guide on how to use WuzzUp, check out the video walkthrough below:
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/your-video-id" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
