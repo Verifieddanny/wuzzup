@@ -47,7 +47,7 @@ For deployment instructions, check out the [Next.js deployment documentation](ht
 
 ## Video Walkthrough
 
-For a step-by-step guide on how to use WuzzUp, check out the video walkthrough below:
+For a step-by-step guide on how to use WuzzUp, check out the video walkthrough below (Under construction 🏗️):
 
 
 https://github.com/user-attachments/assets/93042c72-4597-4222-842b-450734a297de
