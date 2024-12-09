@@ -49,4 +49,6 @@ For deployment instructions, check out the [Next.js deployment documentation](ht
 
 For a step-by-step guide on how to use WuzzUp, check out the video walkthrough below:
 
-<iframe width="560" height="315" src="https://youtu.be/nn9bnIOvxeg" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+https://github.com/user-attachments/assets/93042c72-4597-4222-842b-450734a297de
+
