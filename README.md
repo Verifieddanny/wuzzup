@@ -42,11 +42,6 @@ The easiest way to deploy WuzzUp is using the [Vercel Platform](https://vercel.c
 
 For deployment instructions, check out the [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying).
 
-## Video Walkthrough
-
-For a step-by-step guide on how to use WuzzUp, check out the video walkthrough below:
-
-[Watch the video](https://www.youtube.com/watch?v=your-video-id)
 
 
 
@@ -54,4 +49,4 @@ For a step-by-step guide on how to use WuzzUp, check out the video walkthrough b
 
 For a step-by-step guide on how to use WuzzUp, check out the video walkthrough below:
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/your-video-id" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://youtu.be/nn9bnIOvxeg" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
