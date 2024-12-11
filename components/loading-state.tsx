@@ -1,5 +1,6 @@
 "use client"
 
+import { Progress } from "./ui/progress"
 import { Lock } from "lucide-react"
 import { useEffect, useState } from "react"
 
@@ -32,6 +33,10 @@ export default function LoadingState() {
                                 <Lock className="w-3 h-3" />
                                 <span className="text-sm">End-to-end encrypted (NOT REALLY)</span>
                             </div>
+                        </div>
+                        
+                        <div className="w-64 ">
+                            <Progress value={progress} className= "h-1 bg-[#202C33]" />
                         </div>
                 </div>
             </div>
