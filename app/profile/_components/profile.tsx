@@ -10,6 +10,7 @@ import { useForm } from "react-hook-form"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
+import { fetchMutation } from "convex/nextjs"
 
 interface ProfileFormData {
     name: string;
@@ -49,12 +50,52 @@ export default function ProfileComponent({preloadedUserInfo}: {
                 console.error("User ID not found");
             }
         } catch (error) {
-            
+            console.error(error)
         }
     }
 
-    const handleImageChange = () => {
-        return
+    const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e?.target?.files?.[0];
+
+        if(!file) return;
+
+        try {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+
+            }
+
+            reader.readAsDataURL(file);
+
+            const posturl = await fetchMutation(api.chats.generateUploadUrl)
+
+            const result = await fetch(posturl, {
+                method: "POST",
+                headers: { "Content-Type": file.type},
+                body: file
+            });
+
+            if(!result.ok) {
+                throw new Error(`Failed to upload ${result.statusText}`);
+            }
+
+            const { storageId } = await result.json();
+
+            const url = await fetchMutation(api.chats.getUploadUrl, {
+                storageId
+            })
+
+            if(url && userInfo?.userId) {
+                await fetchMutation(api.users.updateProfileImage, {
+                    userId: userInfo?.userId,
+                    profileImage: url,
+                })
+            }
+
+
+        } catch (error) {
+            console.error("Upload error", error)
+        }
     }
 
     return (

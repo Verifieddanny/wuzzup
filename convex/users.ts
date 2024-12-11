@@ -44,3 +44,50 @@ export const readUser = query({
       }
   }
 })
+
+export const updateName = mutation({
+  args: {
+    userId: v.string(),
+    name: v.string(),
+  },
+  handler: async (ctx, args) => {
+    try {
+      const user = await ctx.db.query("users").filter((q) => q.eq(q.field("userId"), args.userId)).first();
+
+      if(!user) {
+        throw new Error("User not found")
+      }
+
+      const updateUser = await ctx.db.patch(user._id, {
+        name: args.name,
+      })
+
+      return updateUser;
+    } catch (error) {
+      
+    }
+  }
+})
+
+
+export const updateProfileImage = mutation({
+  args: {
+    userId: v.string(),
+    profileImage: v.string(),
+  },
+
+  handler: async (ctx, args) => {
+    const user = await ctx.db.query("users").filter((q) => q.eq(q.field("userId"), args.userId)).first();
+
+    if(!user) {
+      throw new Error("User not found")
+    }
+
+    const updateUser = await ctx.db.patch(user._id, {
+      profileImage: args.profileImage,
+    })
+
+    return updateUser;
+  }
+
+})
