@@ -1,4 +1,6 @@
 "use client"
+import LoadingState from "@/components/loading-state";
+import Sidebar from "@/components/sidebar";
 import { api } from "@/convex/_generated/api";
 import { useAuth } from "@clerk/nextjs";
 import { Preloaded, usePreloadedQuery } from "convex/react";
@@ -35,10 +37,10 @@ export default function ChatLayoutWrapper({children, preloadedUserInfo}: ChatLay
     }
     return (
         <div className="flex h-screen bg-background dark:bg-[#111B21] overflow-hidden">
-            <Sidebar />
-            <Header>
-                {children}
-            </Header>
+            <Sidebar preloadedUserInfo={preloadedUserInfo} />
+            {/* <Header>
+            </Header> */}
+            {children}
         </div>
     )
 }
