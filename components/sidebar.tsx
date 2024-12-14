@@ -1,7 +1,7 @@
 import { useAuth } from "@clerk/nextjs";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation"
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
     DropdownMenu,
@@ -13,21 +13,42 @@ import { Button } from "@/components/ui/button";
 import { MoreVertical, Search, User2 } from "lucide-react";
 import { Preloaded, usePreloadedQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import SearchComponent from "@/app/chat/_components/search";
   
 
 interface SideBarProps {
-    preloadedUserInfo: Preloaded<typeof api.users.readUser>
+    preloadedUserInfo: Preloaded<typeof api.users.readUser>;
+    preloadedConversations: Preloaded<typeof api.chats.getConversations>;
 }
 
-export default function Sidebar({preloadedUserInfo}: SideBarProps){
+export default function Sidebar({preloadedUserInfo, preloadedConversations}: SideBarProps){
     const pathname = usePathname();
     const [searchQuery, setSearchQuery] = useState('');
     const { signOut } = useAuth();
     const router = useRouter();
 
     const userInfo = usePreloadedQuery(preloadedUserInfo);
+    const conversations = usePreloadedQuery(preloadedConversations);
 
-    const filteredConversations: any = [];
+
+    const filteredConversations = useMemo(() => {
+        if(!searchQuery) return conversations
+
+        return conversations?.filter((chat) => {
+            const matchesName = chat.name.toLowerCase().includes(searchQuery.toLowerCase());
+            const matchesMessage = chat.lastMessage.toLowerCase().includes(searchQuery.toLowerCase());
+
+            return matchesName || matchesMessage
+        }).sort((a, b) => {
+            const aNameMatch = a.name.toLowerCase().includes(searchQuery.toLowerCase());
+            const bNameMatch = b.name.toLowerCase().includes(searchQuery.toLowerCase());
+
+            if(aNameMatch && !bNameMatch) return -1;
+            if (!aNameMatch && bNameMatch) return 1;
+
+            return 0;
+        })
+    }, [searchQuery, conversations]);
     return(
     <div className="w-[70px] md:w-[380px] lg:w-1/4 h-screen flex flex-col bg-background dark:bg-[#111B21] border-r border-border dark:border-[#313D45]">
 
@@ -60,7 +81,8 @@ export default function Sidebar({preloadedUserInfo}: SideBarProps){
         <div className="hidden md:block p-2 bg-[#111B21]">
             <div className="relative bg-[#202C33] rounded-lg flex items-center">
                     <div className="pl-4 pr-2 py-2">
-                        <Search className="h-5 w-5 text-[#8696A0]" />
+                        {/* <Search className="h-5 w-5 text-[#8696A0]" /> */}
+                        <SearchComponent onSidebar={true} />
                     </div>
                     <input 
                         placeholder="Search"

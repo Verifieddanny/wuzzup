@@ -91,3 +91,26 @@ export const updateProfileImage = mutation({
   }
 
 })
+
+export const searchUsers = query({
+  args:{
+    searchTerm: v.string(),
+    currentUserId: v.string(),
+  },
+
+  handler: async (ctx, args) => {
+      if(!args.searchTerm) return [];
+
+      const searchTextLower = args.searchTerm.toLowerCase();
+      
+      const users = await ctx.db.query("users").filter((q) => q.eq(q.field("userId"), args.currentUserId)).collect();
+
+      return users.filter((user: any) => {
+        const nameMatch = user?.name?.toLowerCase().includes(searchTextLower);
+        const emailMatch = user?.email?.toLowerCase().includes(searchTextLower);
+
+        return nameMatch || emailMatch;
+      }).slice(0, 10);
+
+  },
+})
