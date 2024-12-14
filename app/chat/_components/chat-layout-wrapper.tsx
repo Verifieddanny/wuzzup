@@ -1,4 +1,6 @@
 "use client"
+import LoadingState from "@/components/loading-state";
+import Sidebar from "@/components/sidebar";
 import { api } from "@/convex/_generated/api";
 import { useAuth } from "@clerk/nextjs";
 import { Preloaded, usePreloadedQuery } from "convex/react";
@@ -6,16 +8,18 @@ import { useEffect, useState } from "react";
 
 interface ChatLayoutProps {
     children: React.ReactNode;
-    preloadedUserInfo: Preloaded<typeof api.users.readUser>
+    preloadedUserInfo: Preloaded<typeof api.users.readUser>;
+    preloadedConversations: Preloaded<typeof api.chats.getConversations>;
 }
 
-export default function ChatLayoutWrapper({children, preloadedUserInfo}: ChatLayoutProps ) {
+export default function ChatLayoutWrapper({children, preloadedUserInfo, preloadedConversations}: ChatLayoutProps ) {
 
 
     const {isLoaded, isSignedIn, userId} = useAuth();
     const [shouldShowLoading, setShouldShowLoading] = useState(true);
 
     const userInfo = usePreloadedQuery(preloadedUserInfo);
+    const conversations = usePreloadedQuery(preloadedConversations);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -24,7 +28,7 @@ export default function ChatLayoutWrapper({children, preloadedUserInfo}: ChatLay
         return () => clearTimeout(timer);
     }, [])
 
-    const isLoading = !isLoaded || userInfo === undefined || shouldShowLoading;
+    const isLoading = !isLoaded || userInfo === undefined || shouldShowLoading || conversations === undefined;
 
     if (isLoading) {
         return <LoadingState />
@@ -35,10 +39,10 @@ export default function ChatLayoutWrapper({children, preloadedUserInfo}: ChatLay
     }
     return (
         <div className="flex h-screen bg-background dark:bg-[#111B21] overflow-hidden">
-            <Sidebar />
-            <Header>
-                {children}
-            </Header>
+            <Sidebar preloadedUserInfo={preloadedUserInfo} preloadedConversations={preloadedConversations} />
+            {/* <Header>
+            </Header> */}
+            {children}
         </div>
     )
 }

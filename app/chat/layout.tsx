@@ -10,8 +10,12 @@ export default async function ChatLayout({children}: {children: React.ReactNode}
         userId: userId!
     })
 
+    const preloadedConversations = await preloadQuery(api.chats.getConversations, {
+        userId: userId!
+    })
+
     return (
-        <ChatLayoutWrapper preloadedUserInfo={preloadedUserInfo}>
+        <ChatLayoutWrapper preloadedUserInfo={preloadedUserInfo} preloadedConversations={preloadedConversations}>
             {children}
         </ChatLayoutWrapper>
     )
