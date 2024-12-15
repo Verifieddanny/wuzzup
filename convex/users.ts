@@ -103,7 +103,7 @@ export const searchUsers = query({
 
       const searchTextLower = args.searchTerm.toLowerCase();
       
-      const users = await ctx.db.query("users").filter((q) => q.eq(q.field("userId"), args.currentUserId)).collect();
+      const users = await ctx.db.query("users").filter((q) => q.neq(q.field("userId"), args.currentUserId)).collect();
 
       return users.filter((user: any) => {
         const nameMatch = user?.name?.toLowerCase().includes(searchTextLower);
