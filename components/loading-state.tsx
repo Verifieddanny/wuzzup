@@ -27,8 +27,8 @@ export default function LoadingState() {
                 <div className="flex-1 flex flex-col items-center justify-center gap-3">
                         <svg
                         viewBox="0 0 256 259"
-                        width="128"
-                        height="131"
+                        width="95"
+                        height="100"
                         className="mb-4"
                         xmlns="http://www.w3.org/2000/svg"
                         preserveAspectRatio="xMidYMid"

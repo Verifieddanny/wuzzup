@@ -59,7 +59,7 @@ export default function Sidebar({preloadedUserInfo, preloadedConversations}: Sid
                 </Avatar>
             </Link>
             <div className="hidden md:flex justify-center items-center gap-2">
-                {/* <SearchComponent /> */}
+                <SearchComponent onSidebar={true} />
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button className="h-10 w-10" variant="ghost" size="icon">
@@ -81,8 +81,7 @@ export default function Sidebar({preloadedUserInfo, preloadedConversations}: Sid
         <div className="hidden md:block p-2 bg-[#111B21]">
             <div className="relative bg-[#202C33] rounded-lg flex items-center">
                     <div className="pl-4 pr-2 py-2">
-                        {/* <Search className="h-5 w-5 text-[#8696A0]" /> */}
-                        <SearchComponent onSidebar={true} />
+                        <Search className="h-5 w-5 text-[#8696A0]" />
                     </div>
                     <input 
                         placeholder="Search"
