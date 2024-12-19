@@ -5,11 +5,10 @@ import { useAuth } from "@clerk/nextjs"
 import { useMutation, useQuery } from "convex/react";
 import { debounce } from "lodash";
 import { useRouter } from "next/navigation";
-import React, { startTransition, useCallback, useState, useTransition } from "react";
+import React, { useCallback, useState, useTransition } from "react";
 import {
     Dialog,
     DialogContent,
-    DialogDescription,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
@@ -27,7 +26,7 @@ export default function SearchComponent({onSidebar}: {onSidebar: boolean}) {
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [debouncedTerm, setDebouncedTerm] = useState<string>("");
     const [isOpen, setIsOpen] = useState<boolean>(false);
-    const [isPending, setIsPending] = useTransition();
+    const [isPending, startTransition] = useTransition();
 
     const router = useRouter();
 

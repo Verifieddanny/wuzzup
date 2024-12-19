@@ -93,7 +93,7 @@ export default function Sidebar({preloadedUserInfo, preloadedConversations}: Sid
         </div>
 
         <div className="flex-1 overflow-y-auto">
-                {filteredConversations?.map((chat: any) => (
+                {filteredConversations?.map((chat) => (
                     <Link href={`/chat/${chat.id}`} key={chat.id}>
                         <div className={`flex items-center px-2 py-2 md:px-3 md:py-3 hover:bg-[#202C33] cursor-pointer ${pathname.split("/")?.[2] === chat?.id ? "bg-[#202C33]" : ""}`}>
                             <div className="relative">
@@ -110,7 +110,7 @@ export default function Sidebar({preloadedUserInfo, preloadedConversations}: Sid
                                     <HighlightText text={chat?.name} searchQuery={searchQuery} />
                                 </h2>
                                 <span className="text-[#8696A0] text-xs ml-2 shrink-0">
-                                    Yesterday
+                                    {chat?.time ?? "..."}
                                 </span>
                             </div>
 

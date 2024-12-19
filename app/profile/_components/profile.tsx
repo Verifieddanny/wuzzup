@@ -27,7 +27,6 @@ export default function ProfileComponent({preloadedUserInfo}: {
     const {
         register,
         handleSubmit,
-        watch,
         formState: { errors },
     } = useForm({
         defaultValues: {
