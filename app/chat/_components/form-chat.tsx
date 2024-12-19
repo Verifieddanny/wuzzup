@@ -154,9 +154,11 @@ export default function FormChat({conversationId, userId}: {conversationId: stri
                 })
             }
 
-            reset()
+            reset();
+            setAttachment([])
         } catch (error) {
-            
+            console.log("Failed to send message:", error);
+            toast.error("Failed to send message. Please try again.")
         }
     }
     return<></>
