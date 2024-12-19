@@ -14,7 +14,7 @@ async function Conversations({params}: {params: Promise<{id: string}>}) {
         conversationId: conversationId as Id<"conversations">
     })
   return (
-    <div className='h-scrren flex flex-col'>
+    <div className='h-screen w-full flex flex-col'>
         <div className='flex-1 flex flex-col overflow-hidden'>
             <ChatList userId={userId! ?? ""} preloadedMessages={preloadedMessages}/>
             <FormChat userId={userId! ?? ""} conversationId={conversationId! ?? ""} />

@@ -3,7 +3,6 @@
 import { api } from "@/convex/_generated/api"
 import { Id } from "@/convex/_generated/dataModel";
 import { Preloaded, usePreloadedQuery } from "convex/react"
-import Image from "next/image";
 import { useEffect, useRef } from "react";
 
 interface Message {
@@ -48,7 +47,7 @@ export default function ChatList({userId, preloadedMessages}: {userId: string, p
                             {message?.type === "image" ? (
                                 <div className="relative w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl">
                                     <div className="w-full">
-                                        <Image src={message.mediaUrl! ?? ""} alt="Message content" className="w-full h-auto max-h-[300px] object-contain rounded-lg"
+                                        <img  src={message.mediaUrl! ?? ""} alt="Message content" className="w-full h-auto max-h-[300px] object-contain rounded-lg"
                                         sizes="{max-width: 640px}, {max-width: 768px} 75vw, {max-width: 1024px} 50vw, 33vw"
                                         onLoad={() => {
                                             messagesEndRef.current?.scrollIntoView({behavior: "smooth"})

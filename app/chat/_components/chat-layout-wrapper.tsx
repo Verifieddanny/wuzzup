@@ -5,6 +5,7 @@ import { api } from "@/convex/_generated/api";
 import { useAuth } from "@clerk/nextjs";
 import { Preloaded, usePreloadedQuery } from "convex/react";
 import { useEffect, useState } from "react";
+import Header from "./header";
 
 interface ChatLayoutProps {
     children: React.ReactNode;
@@ -15,7 +16,7 @@ interface ChatLayoutProps {
 export default function ChatLayoutWrapper({children, preloadedUserInfo, preloadedConversations}: ChatLayoutProps ) {
 
 
-    const {isLoaded, isSignedIn, userId} = useAuth();
+    const {isLoaded, isSignedIn} = useAuth();
     const [shouldShowLoading, setShouldShowLoading] = useState(true);
 
     const userInfo = usePreloadedQuery(preloadedUserInfo);
@@ -40,9 +41,9 @@ export default function ChatLayoutWrapper({children, preloadedUserInfo, preloade
     return (
         <div className="flex h-screen bg-background dark:bg-[#111B21] overflow-hidden">
             <Sidebar preloadedUserInfo={preloadedUserInfo} preloadedConversations={preloadedConversations} />
-            {/* <Header>
-            </Header> */}
+            <Header>
             {children}
+            </Header>
         </div>
     )
 }
