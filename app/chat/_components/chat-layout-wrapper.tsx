@@ -1,6 +1,6 @@
 "use client"
 import LoadingState from "@/components/loading-state";
-import Sidebar from "@/components/sidebar";
+import Sidebar from "@/app/chat/_components/sidebar";
 import { api } from "@/convex/_generated/api";
 import { useAuth } from "@clerk/nextjs";
 import { Preloaded, usePreloadedQuery } from "convex/react";
