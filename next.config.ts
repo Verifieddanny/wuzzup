@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  images: {
+    domains: ["brainy-mosquito-537.convex.cloud"],
+  },
+  /* other config options here */
 };
 
 export default nextConfig;
