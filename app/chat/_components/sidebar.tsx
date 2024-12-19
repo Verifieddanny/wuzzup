@@ -97,39 +97,39 @@ export default function Sidebar({preloadedUserInfo, preloadedConversations}: Sid
                     <Link href={`/chat/${chat.id}`} key={chat.id}>
                         <div className={`flex items-center px-2 py-2 md:px-3 md:py-3 hover:bg-[#202C33] cursor-pointer ${pathname.split("/")?.[2] === chat?.id ? "bg-[#202C33]" : ""}`}>
                             <div className="relative">
-                                <Avatar className="w-12 h-12">
-                                    <AvatarImage src={chat?.chatImage} />
+                                <Avatar >
+                                    <AvatarImage className="w-12 h-12 rounded-full" src={chat?.chatImage} />
                                     <AvatarFallback className="bg-[#687C85]">
                                         <User2 className="h-6 w-6 text-[#CFD9DF]" />
                                     </AvatarFallback>
                                 </Avatar>
                             </div>
+                          <div className="hidden md:block flex-1 min-w-0 ml-3">
+                            <div className="flex justify-between items-baseline">
+                                <h2 className="text-[#E9EDEF] text-base font-normal truncate">
+                                    <HighlightText text={chat?.name} searchQuery={searchQuery} />
+                                </h2>
+                                <span className="text-[#8696A0] text-xs ml-2 shrink-0">
+                                    Yesterday
+                                </span>
+                            </div>
+
+                            <div className="flex items-center justify-between">
+                                <p className="text-[#8696A0] text-sm truncate pr-2">
+                                    {chat?.type === "image" ? (
+                                        <span className="flex items-center gap-1">
+                                            <span className="text-[#8696A0]">📸</span> Photo
+                                        </span>
+                                    ) : (
+                                    <HighlightText text={chat?.lastMessage} searchQuery={searchQuery} /> 
+                                    )
+
+                                    }
+                                </p>
+                            </div>
+                            </div>
                         </div>
 
-                          <div className="hidden md:block flex-1 min-w-0 ml-3">
-            <div className="flex justify-between items-baseline">
-                <h2 className="text-[#E9EDEF] text-base font-normal truncate">
-                    <HighlightText text={chat?.name} searchQuery={searchQuery} />
-                </h2>
-                <span className="text-[#8696A0] text-xs ml-2 shrink-0">
-                    Yesterday
-                </span>
-            </div>
-
-            <div className="flex items-center justify-between">
-                <p className="text-[#8696A0] text-sm truncate pr-2">
-                    {chat?.type === "image" ? (
-                        <span className="flex items-center gap-1">
-                            <span className="text-[#8696A0]">📸</span> Photo
-                        </span>
-                    ) : (
-                    <HighlightText text={chat?.name} searchQuery={searchQuery} /> 
-                    )
-
-                    }
-                </p>
-            </div>
-        </div>
                       
                     </Link>
                 ))}
