@@ -15,10 +15,10 @@ interface FormInput {
     message: string;
 }
 export default function FormChat({conversationId, userId}: {conversationId: string, userId: string}) {
-    const {register, handleSubmit, watch, setValue, reset,} = useForm<FormInput>(); 
+    const {register, handleSubmit, watch, reset,} = useForm<FormInput>(); 
     const [attachments, setAttachments] = useState<string[]>([]);
     const [isUploading, setIsUploading] = useState(false);
-    const [isListening, setIsListening] = useState(false);
+    // const [isListening, setIsListening] = useState(false);
     const [isRecording, setIsRecording] = useState(false);
     const [recordingDuration, setRecordingDuration] = useState(0);
     const [audioAttachments, setAudioAttachments] = useState<Array<{
@@ -31,7 +31,7 @@ export default function FormChat({conversationId, userId}: {conversationId: stri
     // const audioRef = useRef<HTMLAudioElement[] | null>(null);
     const audioRef = useRef<(HTMLAudioElement | null)[]>([]);
 
-    const { startRecording, stopRecording, mediaBlobUrl } = useReactMediaRecorder({
+    const { startRecording, stopRecording } = useReactMediaRecorder({
         audio: true,
         onStop: (blobUrl, blob) => {
             if (blob) {
@@ -320,7 +320,7 @@ export default function FormChat({conversationId, userId}: {conversationId: stri
             placeholder={
               isUploading
                 ? "Uploading..."
-                : isListening
+                : isRecording
                 ? "Listening..."
                 : "Type a message"
             }

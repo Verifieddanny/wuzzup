@@ -28,13 +28,14 @@ export default function ChatList({ userId, preloadedMessages }: { userId: string
 
     // State to manage audio play/pause
     const [playingAudioId, setPlayingAudioId] = useState<string | null>(null);
-    const [audioDuration, setAudioDuration] = useState<number | null>(null);
+    const [_audioDuration, setAudioDuration] = useState<number | null>(null);
     const waveformRefs = useRef<Map<string, WaveSurferInstance | null>>(new Map()); // Use a map with strong typing
     const [containerWidth, setContainerWidth] = useState<number>(0);
 
     // Auto-scroll to the latest message
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        
     }, [messages]);
 
     // Update container width on resize
@@ -107,11 +108,11 @@ export default function ChatList({ userId, preloadedMessages }: { userId: string
     };
 
     // Format audio duration (minutes:seconds)
-    const formatDuration = (duration: number) => {
-        const minutes = Math.floor(duration / 60);
-        const seconds = Math.floor(duration % 60);
-        return `${minutes}:${seconds.toString().padStart(2, "0")}`;
-    };
+    // const formatDuration = (duration: number) => {
+    //     const minutes = Math.floor(duration / 60);
+    //     const seconds = Math.floor(duration % 60);
+    //     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+    // };
 
     return (
         <div ref={containerRef} className="flex-1 overflow-y-auto bg-background dark:bg-[#0B141A] max-h-[calc(100vh-135px)]" style={{
