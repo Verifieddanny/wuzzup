@@ -5,8 +5,9 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { fetchMutation } from "convex/nextjs";
 import { useMutation } from "convex/react";
-import { Mic, Paperclip, Send, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useReactMediaRecorder } from "react-media-recorder";
+import { Mic, Paperclip, Send, X, PlayCircle, PauseCircle, Trash2, StopCircle } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form"
 import { toast } from "sonner";
 
@@ -14,131 +15,119 @@ interface FormInput {
     message: string;
 }
 export default function FormChat({conversationId, userId}: {conversationId: string, userId: string}) {
-    const {register, handleSubmit, watch, setValue, reset,} = useForm<FormInput>(); 
+    const {register, handleSubmit, watch, reset,} = useForm<FormInput>(); 
     const [attachments, setAttachments] = useState<string[]>([]);
     const [isUploading, setIsUploading] = useState(false);
-    const [isListening, setIsListening] = useState(false);
-    const [speechSupported, setSpeechSupported] = useState(false);
-    const [hasMicPermission, setHasMicPermission] =  useState<boolean | null>(null);
+    // const [isListening, setIsListening] = useState(false);
+    const [isRecording, setIsRecording] = useState(false);
+    const [recordingDuration, setRecordingDuration] = useState(0);
+    const [audioAttachments, setAudioAttachments] = useState<Array<{
+      url: string;
+      blob: Blob;
+      duration: number;
+    }>>([]);
+    const [playingAudioIndex, setPlayingAudioIndex] = useState<number | null>(null);
+    const timerRef = useRef<NodeJS.Timeout | null>(null);
+    // const audioRef = useRef<HTMLAudioElement[] | null>(null);
+    const audioRef = useRef<(HTMLAudioElement | null)[]>([]);
 
-    const recognitionRef = useRef<SpeechRecognition | null>(null);
+    const { startRecording, stopRecording } = useReactMediaRecorder({
+        audio: true,
+        onStop: (blobUrl, blob) => {
+            if (blob) {
+                const audio = new Audio(blobUrl);
+                audio.addEventListener('loadedmetadata', () => {
+                    console.log({recordingDuration})
+                    const duration = memoizedDuration;
+                    console.log({duration})
+                 
+                    setAudioAttachments(prev => [...prev, {
+                        url: blobUrl,
+                        blob: blob,
+                        duration: duration
+                    }]);
+                });
+            }
+        }
+    });
 
     const sendMessage = useMutation(api.chats.sendMessage)
 
-    const checkMicrophonePermission = async () => {
-        try {
-            const permissionResult = await navigator.mediaDevices.getUserMedia({audio: true})
-
-            setHasMicPermission(true);
-            permissionResult.getTracks().forEach(track => track.stop())
-        } catch (error) {
-            setHasMicPermission(false);
-            console.log("Microphone permission error", error)
-            
-        }
-    }
-
     useEffect(() => {
-        if(typeof window !== "undefined") {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
-
-            if(SpeechRecognition) {
-                setSpeechSupported(true);
-
-                recognitionRef.current = new SpeechRecognition()
-                const recognition = recognitionRef.current;
-
-                recognition.continuous = true;
-                recognition.interimResults = true;
-                recognition.lang = "en-US";
-
-                recognition.onstart = () => {
-                    setIsListening(true);
-                    toast.success("Started listening")
-                };
-
-                recognition.onresult = (event) => {
-                    const current = event.resultIndex;
-                    const transcript = event.results[current][0].transcript;
-                    const currentMessage = watch('message') || "";
-                    if(event.results[current].isFinal) {
-                        setValue('message', currentMessage + transcript + " ")
-                    }
-                };
-
-                recognition.onerror = (event) => {
-                    console.log("Speech recognition error   : ", event.error);
-                    setIsListening(false);
-
-                    switch (event.error) {
-                        case 'not-allowed':
-                            toast.error("Microphone access denied, Please enable microphone permission.");
-                            setHasMicPermission(false);
-                            break;
-                        
-                        case 'no-speech':
-                            toast.error("No speech detected, please try again.");
-                            break;
-                        
-                        case 'network':
-                            toast.error("Network error, please check your connection.");
-                            break;
-                    
-                        default:
-                            break;
-                    }
-                }
-
-                recognition.onend = () => {
-                    setIsListening(false);
-                    toast.success("Stopped listening")
-                };
-
-                checkMicrophonePermission();
-            }
-        } 
-    }, [])
-
-    const toggleListening = async () => {
-        if(!recognitionRef.current) return;
-
-        if(isListening) {
-            recognitionRef.current.stop()
+        if (isRecording) {
+            timerRef.current = setInterval(() => {
+                setRecordingDuration(prev => prev + 1);
+            }, 1000);
         } else {
-            if(hasMicPermission === false){
-                toast.error(
-                    "Microphone access denied. Please enable microphone permission in your browser settings.", 
-                    {
-                        action: {
-                            label: "How to enable",
-                            onClick: () => {
-                                toast.info("To enable microphone: Click the camera/microphone icon in your browser's address bar and allow access", {duration: 5000})
-                            }
-                        }
-                    }
-                )
-
-                return ;
+            if (timerRef.current) {
+                clearInterval(timerRef.current);
             }
-
-            try {
-                await checkMicrophonePermission();
-
-                if(hasMicPermission) {
-                    recognitionRef.current.start()
-                }
-            } catch (error) {
-                console.log("Error starting speech recognition ", error);
-                toast.error("Failed to start speech recognition. Please try again.")
-            }
+            setRecordingDuration(0);
         }
-    }
+
+        return () => {
+            if (timerRef.current) {
+                clearInterval(timerRef.current);
+            }
+        };
+    }, [isRecording]);
+
+
+    const memoizedDuration = useMemo(() => recordingDuration, [recordingDuration]);
+
+
+    const formatDuration = (seconds: number) => {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = Math.floor(seconds % 60);
+        return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+    };
+
+    const handleStartRecording = () => {
+        setIsRecording(true);
+        startRecording();
+    };
+
+    const handleStopRecording = () => {
+        setIsRecording(false);
+        stopRecording();
+    };
+
+    const deleteAudio = (index: number) => {
+        setAudioAttachments(prev => prev.filter((_, i) => i !== index));
+    };
+
+    const cancelRecording = () => {
+        setIsRecording(false);
+        stopRecording();
+        setAudioAttachments(prev => prev.slice(0, -1));
+    };
+
+    // Play or pause the audio based on the index
+    const toggleAudioPlay = (index: number) => {
+        const audio = audioRef.current?.[index];
+
+        if (!audio) return;
+
+        if (playingAudioIndex === index) {
+            audio.pause();
+            setPlayingAudioIndex(null);
+        } else {
+            // Pause any currently playing audio
+            if (playingAudioIndex !== null && audioRef.current?.[playingAudioIndex]) {
+                audioRef.current[playingAudioIndex].pause();
+            }
+            audio.play();
+            setPlayingAudioIndex(index);
+        }
+    };
+
 
     const onSubmit = async (data: FormInput) => {
         try {
-            if(isListening && recognitionRef.current) {
-                recognitionRef.current.stop()
-            }
+            // if(isListening && recognitionRef.current) {
+            //     recognitionRef.current.stop()
+            // }
+
 
             for (const imageUrl of attachments) {
                 await sendMessage({
@@ -149,18 +138,43 @@ export default function FormChat({conversationId, userId}: {conversationId: stri
                     mediaUrl: imageUrl,
                 })
             }
+  // Send audio if recorded
+            
+            for (const audio of audioAttachments) {
+                const uploadUrl = await fetchMutation(api.chats.generateUploadUrl);
+                const response = await fetch(uploadUrl, {
+                    method: "POST",
+                    headers: { "Content-Type": "audio/wav" },
+                    body: audio.blob,
+                });
 
-            if(data.message.trim() ) {
+                if (!response.ok) {
+                    throw new Error(`Audio upload failed: ${response.statusText}`);
+                }
+
+                const { storageId } = await response.json();
+                const audioUrl = await fetchMutation(api.chats.getUploadUrl, { storageId });
+
                 await sendMessage({
-                    type: "text",
+                    type: "audio",
                     conversationId: conversationId as Id<"conversations">,
                     senderId: userId!,
-                    content: data.message,
-                })
+                    content: "Audio Message",
+                    mediaUrl: audioUrl || undefined,
+                });
             }
+            if(data.message.trim() ) {
+                            await sendMessage({
+                                type: "text",
+                                conversationId: conversationId as Id<"conversations">,
+                                senderId: userId!,
+                                content: data.message,
+                            })
+                        }
 
             reset();
-            setAttachments([])
+            setAttachments([]);
+            setAudioAttachments([]);
         } catch (error) {
             console.log("Failed to send message:", error);
             toast.error("Failed to send message. Please try again.")
@@ -206,8 +220,10 @@ export default function FormChat({conversationId, userId}: {conversationId: stri
     const removeAttachment = (index: number) => {
         setAttachments(attachments.filter((_, i) => i !== index))
       }
-    return(
+
+    return (
         <div className="bg-muted dark:bg-[#202C33]">
+            {/* Image Attachments */}
             {attachments?.length > 0 && (
                 <div className="p-2 flex gap-2 flex-wrap border-b border-border dark:border-[#313D45]">
                     {attachments.map((url, index) => (
@@ -221,27 +237,135 @@ export default function FormChat({conversationId, userId}: {conversationId: stri
                 </div>
             )}
 
-            <form onSubmit={handleSubmit(onSubmit)} className={`bg-muted dark:bg-[#202C33] p-4 flex items-center space-x-2  ${attachments?.length > 0 && "pb-[5rem]" } `}>
+           {/* Audio Attachments Section */}
+           {audioAttachments.length > 0 && !isRecording && (
+                <div className="p-4 space-y-2 border-t border-border">
+                    {audioAttachments.map((audio, index) => (
+                        <div key={index} className="flex items-center justify-between bg-background dark:bg-[#2A3942] p-3 rounded-lg">
+                            <div className="flex items-center space-x-3">
+                                <Mic className="h-5 w-5 text-primary" />
+                                <span className="text-sm font-medium">{formatDuration(audio.duration)}</span>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => toggleAudioPlay(index)}
+                                    className="text-primary"
+                                >
+                                    {playingAudioIndex === index ? <PauseCircle className="h-5 w-5" /> : <PlayCircle className="h-5 w-5" />}
+                                </Button>
+                                <Button
+                                    onClick={() => deleteAudio(index)}
+                                    variant="ghost"
+                                    size="sm"
+                                    className="text-red-500 hover:text-red-600"
+                                >
+                                    <Trash2 className="h-4 w-4" />
+                                </Button>
+                            </div>
+                            <audio  ref={(el) => {
+                                    audioRef.current[index] = el; 
+                                }}
+                                src={audio.url} />
+
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            <form onSubmit={handleSubmit(onSubmit)} className={`bg-muted dark:bg-[#202C33] p-4 flex items-center space-x-2 ${(attachments?.length > 0 || audioAttachments.length > 0) && "pb-[5rem]"}`}>
+                {/* File upload button */}
                 <div className="relative">
                     <label htmlFor="file-upload" className="cursor-pointer inline-flex items-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-10 w-10 justify-center">
                         <Paperclip className="w-5 h-5" />
                     </label>
-                    <input id="file-upload" type="file" accept="image/*" className="hidden" onChange={handleImageUpload} disabled={isUploading}  />
+                    <input id="file-upload" type="file" accept="image/*" className="hidden" onChange={handleImageUpload} disabled={isUploading} />
                 </div>
 
-                <Input {...register("message")} placeholder={
-                    isUploading ? "Uploading..." : isListening ? "Listening..." : "Type a message"
-                } className="flex-1 bg-background dark:bg-[#2A3942] border-none placeholder:text-muted-foreground" />
-                {speechSupported && (
-                    <Button type="button" variant="ghost" size="icon" onClick={toggleListening} className={`transition-colors ${isListening ? "text-red-500" : hasMicPermission === false ? "text-gray-400": ""}`}>
-                        <Mic className={`h-6 w-6 ${isListening ? "animate-pulse": ""}`} />
+                {isRecording ? (
+          <div className="flex-1 flex items-center justify-between bg-background dark:bg-[#2A3942] rounded-md px-4 h-10">
+            <div className="flex items-center space-x-3">
+              <div className="relative">
+                <Mic className="h-5 w-5 text-red-500 animate-pulse" />
+                <span className="absolute -top-1 -right-1 h-2 w-2 bg-red-500 rounded-full animate-ping" />
+              </div>
+              <span className="text-sm font-medium">{formatDuration(recordingDuration)}</span>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={cancelRecording}
+                className="text-red-500 hover:text-red-600 p-0 h-8 w-8"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={handleStopRecording}
+                className="text-primary hover:text-primary/80 p-0 h-8 w-8"
+              >
+                <StopCircle className="h-5 w-5" />
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <Input
+            {...register("message")}
+            placeholder={
+              isUploading
+                ? "Uploading..."
+                : isRecording
+                ? "Listening..."
+                : "Type a message"
+            }
+            className="flex-1 bg-background dark:bg-[#2A3942] border-none placeholder:text-muted-foreground"
+          />
+        )}
+
+                {/* <Input 
+                    {...register("message")} 
+                    placeholder={isUploading ? "Uploading..." : isListening ? "Listening..." : "Type a message"}
+                    className="flex-1 bg-background dark:bg-[#2A3942] border-none placeholder:text-muted-foreground" 
+                /> */}
+
+                {/* Recording button with ripple effect */}
+                {isRecording ? (
+                    <Button variant="outline" onClick={handleStopRecording}>
+                        <StopCircle className="w-6 h-6" />
+                    </Button>
+                ) : (
+                    <Button variant="outline" onClick={handleStartRecording}>
+                        <Mic className="w-6 h-6" />
                     </Button>
                 )}
 
-                <Button type="submit" size="icon" disabled={isUploading || !attachments.length && !watch("message")} >
+                {/* Speech recognition button */}
+                {/* {speechSupported && (
+                    <Button 
+                        type="button" 
+                        variant="ghost" 
+                        size="icon" 
+                        onClick={toggleListening} 
+                        className={`transition-colors ${isListening ? "text-red-500" : hasMicPermission === false ? "text-gray-400": ""}`}
+                    >
+                        <Mic className={`h-6 w-6 ${isListening ? "animate-pulse": ""}`} />
+                    </Button>
+                )} */}
+
+                <Button 
+                    type="submit" 
+                    size="icon" 
+                    disabled={isUploading || (!attachments.length && !audioAttachments.length && !watch("message"))}
+                >
                     <Send className="w-5 h-5" />
                 </Button>
             </form>
         </div>
-    )
+    );
 }
