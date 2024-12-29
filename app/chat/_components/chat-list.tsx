@@ -28,13 +28,14 @@ export default function ChatList({ userId, preloadedMessages }: { userId: string
 
     // State to manage audio play/pause
     const [playingAudioId, setPlayingAudioId] = useState<string | null>(null);
-    const [_audioDuration, setAudioDuration] = useState<number | null>(null);
+    const [audioDuration, setAudioDuration] = useState<number | null>(null);
     const waveformRefs = useRef<Map<string, WaveSurferInstance | null>>(new Map()); // Use a map with strong typing
     const [containerWidth, setContainerWidth] = useState<number>(0);
 
     // Auto-scroll to the latest message
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        console.log(audioDuration)
         
     }, [messages]);
 
