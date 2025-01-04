@@ -20,7 +20,12 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: "Wuzzup",
   description: "Where the aunties gossip",
+  openGraph: {
+    images: "/opengraph-image.png",
+  },
+  metadataBase: new URL("https://wuzzup.vercel.app/"),
 };
+
 
 export default function RootLayout({
   children,
