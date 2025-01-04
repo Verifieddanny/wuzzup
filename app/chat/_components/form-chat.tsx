@@ -18,7 +18,6 @@ export default function FormChat({conversationId, userId}: {conversationId: stri
     const {register, handleSubmit, watch, reset,} = useForm<FormInput>(); 
     const [attachments, setAttachments] = useState<string[]>([]);
     const [isUploading, setIsUploading] = useState(false);
-    // const [isListening, setIsListening] = useState(false);
     const [isRecording, setIsRecording] = useState(false);
     const [recordingDuration, setRecordingDuration] = useState(0);
     const [audioAttachments, setAudioAttachments] = useState<Array<{
@@ -244,7 +243,7 @@ export default function FormChat({conversationId, userId}: {conversationId: stri
                         <div key={index} className="flex items-center justify-between bg-background dark:bg-[#2A3942] p-3 rounded-lg">
                             <div className="flex items-center space-x-3">
                                 <Mic className="h-5 w-5 text-primary" />
-                                <span className="text-sm font-medium">{formatDuration(audio.duration)}</span>
+                                <span className="text-sm font-medium">{formatDuration(recordingDuration)}</span>
                             </div>
                             <div className="flex items-center space-x-2">
                                 <Button
@@ -315,48 +314,23 @@ export default function FormChat({conversationId, userId}: {conversationId: stri
             </div>
           </div>
         ) : (
-          <Input
+            <Input
             {...register("message")}
-            placeholder={
-              isUploading
-                ? "Uploading..."
-                : isRecording
-                ? "Listening..."
-                : "Type a message"
-            }
+            placeholder={isUploading ? "Uploading..." : "Type a message"}
             className="flex-1 bg-background dark:bg-[#2A3942] border-none placeholder:text-muted-foreground"
           />
         )}
 
-                {/* <Input 
-                    {...register("message")} 
-                    placeholder={isUploading ? "Uploading..." : isListening ? "Listening..." : "Type a message"}
-                    className="flex-1 bg-background dark:bg-[#2A3942] border-none placeholder:text-muted-foreground" 
-                /> */}
-
-                {/* Recording button with ripple effect */}
                 {isRecording ? (
-                    <Button variant="outline" onClick={handleStopRecording}>
+                    <Button type="button"  variant="outline" onClick={handleStopRecording}>
                         <StopCircle className="w-6 h-6" />
                     </Button>
                 ) : (
-                    <Button variant="outline" onClick={handleStartRecording}>
+                    <Button type="button"  variant="outline" onClick={handleStartRecording}>
                         <Mic className="w-6 h-6" />
                     </Button>
                 )}
 
-                {/* Speech recognition button */}
-                {/* {speechSupported && (
-                    <Button 
-                        type="button" 
-                        variant="ghost" 
-                        size="icon" 
-                        onClick={toggleListening} 
-                        className={`transition-colors ${isListening ? "text-red-500" : hasMicPermission === false ? "text-gray-400": ""}`}
-                    >
-                        <Mic className={`h-6 w-6 ${isListening ? "animate-pulse": ""}`} />
-                    </Button>
-                )} */}
 
                 <Button 
                     type="submit" 
