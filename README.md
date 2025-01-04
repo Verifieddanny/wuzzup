@@ -45,10 +45,25 @@ For deployment instructions, check out the [Next.js deployment documentation](ht
 
 
 
-## Video Walkthrough
+## Video Walkthrough of Features implemented
 
 For a step-by-step guide on how to use WuzzUp, check out the video walkthrough below (Under construction 🏗️):
 
+### Signing up 👇
 
-https://github.com/user-attachments/assets/93042c72-4597-4222-842b-450734a297de
+[Sign up](https://github.com/user-attachments/assets/ef14924b-5564-4f09-966a-dedae6e46c17)
 
+
+### Signing in (View on YT) 👇
+
+[![Sign in](https://img.youtube.com/vi/DB50E7PIaz4/0.jpg)](https://www.youtube.com/watch?v=DB50E7PIaz4)
+
+
+### Searching for users 👇
+
+[Searching for users](https://github.com/user-attachments/assets/c606dffb-47a5-478d-9bd0-a88534bfc4ba)
+
+
+### Sending Messages (View on YT) 👇
+
+[![Sending chat](https://img.youtube.com/vi/fYuqEc8W7tc/0.jpg)](https://www.youtube.com/watch?v=fYuqEc8W7tc)
